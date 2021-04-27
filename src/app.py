@@ -53,6 +53,38 @@ def regexmatkul(s):
     matkul = re.findall('(\\b[a-zA-Z][a-zA-Z]\\d{4}\\b)', s)
     print(matkul)
 
+def regexdeadline(s):
+    deadline = re.findall('(\\b[dD]eadline\\b)', s)
+    print(deadline)
+
+def regexminggu(s):
+    minggu = re.findall('(\\b[0-9]+ [mM]inggu [kK]e [dD]epan\\b)', s)
+    print(minggu)
+
+def regexhariN(s):
+    hariN = re.findall('(\\b[0-9]+ [hH]ari [kK]e [dD]epan\\b)', s)
+    print(hariN)
+
+def regexhariIni(s):
+    hariIni = re.findall('(\\b[hH]ari [iI]ni\\b)', s)
+    print(hariIni)
+
+def regexTaskX(s):
+    taskX = re.findall('(\\b[tT]ask [0-9]+\\b)', s)
+    print(taskX)
+
+def regexselesai(s):
+    selesai = re.findall('(\\b[sS]elesai\\b)', s)
+    print(selesai)
+
+def regexpersona(s):
+    persona = re.findall('(\\b[pP]ersona\\b)', s)
+    print(persona)
+
+def regexfitur(s):
+    fitur = re.findall('(\\b[fF]itur\\b)', s)
+    print(fitur)
+
 @app.route("/")
 @app.route("/index")
 def index():
@@ -62,9 +94,12 @@ def index():
 def query():
     query = request.args.get("q")
     print(query)
-    regextanggal(query)
-    regexkatapenting(query)
-    regexmatkul(query)
+    
+    
+    regexTaskX(query)
+    regexselesai(query)
+    regexpersona(query)
+    regexfitur(query)
     return render_template("index.html")
 
 
