@@ -1,5 +1,5 @@
-Kuis
-Ujian
-Tucil
-Tubes
-Praktikum
+[kK]uis
+[uU]jian
+[tT]ucil
+[tT]ubes
+[pP]raktikum
