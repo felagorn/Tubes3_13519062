@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>persona</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/fonts/material-icons.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/fonts/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/fonts/material-icons.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
 </head>
 
 <body style="background: var(--dark);">
@@ -43,9 +43,9 @@
                         </div>
                     </div>
                     <div class="card-footer" style="background-color: var(--01dp);box-shadow: 0px 3x 5px var(--surface-dark);">
-                        <form>
+                        <form method="GET" action="/query">
                             <div class="form-row">
-                                <div class="col align-self-center"><textarea class="form-control" placeholder="Enter a message"></textarea></div>
+                                <div class="col align-self-center"><textarea class="form-control" placeholder="Enter a message" name="q" autofocus></textarea></div>
                                 <div class="col-1"><button class="btn" type="submit"><i class="material-icons">send</i></button></div>
                             </div>
                         </form>
@@ -54,8 +54,8 @@
             </div>
         </div>
     </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
 </body>
 
 </html>
