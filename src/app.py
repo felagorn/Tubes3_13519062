@@ -84,7 +84,7 @@ def regexKataPenting(s):
         for line in filekata:
             katapenting.append(line.rstrip())
     x = '(\\b'+'|'.join(katapenting)+'\\b)'
-    katapentingreg = re.findall(x , s)
+    katapentingreg = re.findall(x , s.title())
     return katapentingreg
 
 def regexMatkul(s):
@@ -99,11 +99,11 @@ def kmpDeadline(s):
     return knuthMorrisPratt(s.lower(), "deadline")
 
 def regexNMingguKeDepan(s):
-    minggu = re.findall('(\\b[0-9]+ [mM]inggu [kK]e [dD]epan\\b)', s)
+    minggu = re.findall('(\\-?[0-9]+ [mM]inggu [kK]e [dD]epan\\b)', s)
     return minggu
 
 def regexNHariKeDepan(s):
-    hariN = re.findall('(\\b[0-9]+ [hH]ari [kK]e [dD]epan\\b)', s)
+    hariN = re.findall('(\\-?[0-9]+ [hH]ari [kK]e [dD]epan\\b)', s)
     return hariN
 
 def regexHariIni(s):
@@ -175,8 +175,8 @@ def chat():
         itemid = addJadwal(tanggal[0], matkul[0], kataPenting[0], topik[0])
         if itemid > 0:
             response = ["[TASK BERHASIL DICATAT]", "(ID: " + str(itemid) + ") " + tanggal[0].strftime('%d/%m/%Y') + " - " + matkul[0].upper() + " - " + kataPenting[0].title() + " - " + topik[0]]
-    elif (len(tanggal) <= 2) and (len(matkul) == 0) and (len(kataPenting) == 0) and (len(topik) == 0) and (deadline > -1):
-        if (len(tanggal) == 0) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0) and (len(taskX) == 0):
+    elif (len(tanggal) <= 2) and (len(matkul) == 0) and (len(kataPenting) == 0) and (len(topik) == 0) and (deadline > -1) and (len(taskX) == 0):
+        if (len(tanggal) == 0) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0):
             deadlines = Jadwal.query.all()
             if len(deadlines) == 0:
                 response = ["Tidak ada"]
@@ -186,7 +186,7 @@ def chat():
                 for dl in deadlines:
                     response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
                     i += 1
-        elif (len(tanggal) == 2) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0) and (len(taskX) == 0):
+        elif (len(tanggal) == 2) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0):
             deadlines = Jadwal.query.filter(Jadwal.tanggal.between(min(tanggal[0], tanggal[1]), max(tanggal[0], tanggal[1]))).all()
             if len(deadlines) == 0:
                 response = ["Tidak ada"]
@@ -196,10 +196,10 @@ def chat():
                 for dl in deadlines:
                     response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
                     i += 1
-        elif (len(tanggal) == 0) and (len(nMingguKeDepan) == 1) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0) and (len(taskX) == 0):
+        elif (len(tanggal) == 0) and (len(nMingguKeDepan) == 1) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0):
             todayDate = datetime.date.today()
             weeks = nMingguKeDepan[0].split(" ")
-            deadlines = Jadwal.query.filter(Jadwal.tanggal.between(todayDate, (todayDate + datetime.timedelta(weeks=int(weeks[0]))))).all()
+            deadlines = Jadwal.query.filter(Jadwal.tanggal.between(todayDate, (todayDate + datetime.timedelta(days=1, weeks=int(weeks[0]))))).all()
             if len(deadlines) == 0:
                 response = ["Tidak ada"]
             else:
@@ -208,7 +208,87 @@ def chat():
                 for dl in deadlines:
                     response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
                     i += 1
-
+        elif (len(tanggal) == 0) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 1) and (len(hariIni) == 0):
+            todayDate = datetime.date.today()
+            days = nHariKeDepan[0].split(" ")
+            deadlines = Jadwal.query.filter(Jadwal.tanggal.between(todayDate, (todayDate + datetime.timedelta(days=(int(days[0]) + 1))))).all()
+            if len(deadlines) == 0:
+                response = ["Tidak ada"]
+            else:
+                response = ["[Daftar Deadline]"]
+                i = 1
+                for dl in deadlines:
+                    response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
+                    i += 1
+        elif (len(tanggal) == 0) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 1):
+            todayDate = datetime.date.today()
+            tomorrowDate = todayDate + datetime.timedelta(days=1)
+            deadlines = Jadwal.query.filter(Jadwal.tanggal.between(todayDate, tomorrowDate)).all()
+            if len(deadlines) == 0:
+                response = ["Tidak ada"]
+            else:
+                response = ["[Daftar Deadline]"]
+                i = 1
+                for dl in deadlines:
+                    response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
+                    i += 1
+    elif (len(tanggal) <= 2) and (len(matkul) == 0) and (len(kataPenting) == 1) and (len(topik) == 0) and (deadline >= -1) and (len(taskX) == 0):
+        if (len(tanggal) == 0) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0):
+            deadlines = Jadwal.query.filter_by(jenis_tugas=kataPenting[0].title()).all()
+            if len(deadlines) == 0:
+                response = ["Tidak ada"]
+            else:
+                response = ["[Daftar Deadline]"]
+                i = 1
+                for dl in deadlines:
+                    response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
+                    i += 1
+        elif (len(tanggal) == 2) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0):
+            deadlines = Jadwal.query.filter(and_(Jadwal.tanggal.between(min(tanggal[0], tanggal[1]), max(tanggal[0], tanggal[1])), (Jadwal.jenis_tugas == kataPenting[0].title()))).all()
+            if len(deadlines) == 0:
+                response = ["Tidak ada"]
+            else:
+                response = ["[Daftar Deadline]"]
+                i = 1
+                for dl in deadlines:
+                    response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
+                    i += 1
+        elif (len(tanggal) == 0) and (len(nMingguKeDepan) == 1) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0):
+            todayDate = datetime.date.today()
+            weeks = nMingguKeDepan[0].split(" ")
+            deadlines = Jadwal.query.filter(and_(Jadwal.tanggal.between(todayDate, (todayDate + datetime.timedelta(days=1, weeks=int(weeks[0])))), (Jadwal.jenis_tugas == kataPenting[0].title()))).all()
+            if len(deadlines) == 0:
+                response = ["Tidak ada"]
+            else:
+                response = ["[Daftar Deadline]"]
+                i = 1
+                for dl in deadlines:
+                    response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
+                    i += 1
+        elif (len(tanggal) == 0) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 1) and (len(hariIni) == 0):
+            todayDate = datetime.date.today()
+            days = nHariKeDepan[0].split(" ")
+            deadlines = Jadwal.query.filter(and_(Jadwal.tanggal.between(todayDate, (todayDate + datetime.timedelta(days=(int(days[0]) + 1)))), (Jadwal.jenis_tugas == kataPenting[0].title()))).all()
+            if len(deadlines) == 0:
+                response = ["Tidak ada"]
+            else:
+                response = ["[Daftar Deadline]"]
+                i = 1
+                for dl in deadlines:
+                    response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
+                    i += 1
+        elif (len(tanggal) == 0) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 1):
+            todayDate = datetime.date.today()
+            tomorrowDate = todayDate + datetime.timedelta(days=1)
+            deadlines = Jadwal.query.filter(and_(Jadwal.tanggal.between(todayDate, tomorrowDate), (Jadwal.jenis_tugas == kataPenting[0].title()))).all()
+            if len(deadlines) == 0:
+                response = ["Tidak ada"]
+            else:
+                response = ["[Daftar Deadline]"]
+                i = 1
+                for dl in deadlines:
+                    response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
+                    i += 1
     elif(len(matkul)==1) and (deadline>-1) and (len(kataPenting)==1):
         print(kataPenting)
         print(kataPenting[0].title())
@@ -235,7 +315,6 @@ def chat():
             response = ["[TASK BERHASIL DIUPDATE]"]
         else: 
             response = ["[TASK TIDAK ADA TOLONG CEK KEMBALI]"]
-
     #KASUS 5 = HAPUS TANGGAL (kata kunci = task X dan selesai)
     elif (len(tanggal) == 0) and (len(taskX)==1) and (selesai>-1):
         taskList = taskX[0].split(" ")
