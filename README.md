@@ -2,7 +2,7 @@
 > Persona - Penerapan String Matching dan Regular Expression dalam Pembangunan Deadline Reminder Assistant
 
 ## Daftar Isi
-* [Algoritma KMP, BM, dan Regex](#algoritma-kmp,-bm,-dan-regex)
+* [Algoritma KMP, BM, dan Regex](#algoritma-kmp-bm-dan-regex)
 * [Prerequisites](#prerequisites)
 * [Setup](#setup)
 * [Cara Menggunakan Program](#cara-menggunakan-program)
