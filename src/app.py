@@ -294,8 +294,6 @@ def chat():
                     response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
                     i += 1
     elif(len(matkul)==1) and (deadline>-1) and (len(kataPenting)==1) and (fiturHelp == -1):
-        print(kataPenting)
-        print(kataPenting[0].title())
         deadlines = Jadwal.query.filter(and_(Jadwal.matkul==matkul[0].upper(), Jadwal.jenis_tugas == kataPenting[0].title())).all()    
         if(kataPenting[0].title() != "Tucil" and kataPenting[0].title() !="Tubes"):
             response = ["Bukan deadline kak :("]
