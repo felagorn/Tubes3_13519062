@@ -207,5 +207,28 @@ def chat():
                 for dl in deadlines:
                     response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
                     i += 1
+        #KASUS 4 = UPDATE TANGGAL (kata kunci = tanggal dan task X)
+    elif (len(tanggal) == 1) and (len(taskX)==1):
+        taskList = taskX[0].split(" ")
+        idDelete = int(taskList[1])
+        update_tanggal = Jadwal.query.filter(Jadwal.id == idDelete).first()
+        if update_tanggal: 
+            update_tanggal.tanggal = tanggal[0]
+            db.session.commit()
+            response = ["[TASK BERHASIL DIUPDATE]"]
+        else: 
+            response = ["[TASK TIDAK ADA TOLONG CEK KEMBALI]"]
+
+    #KASUS 5 = HAPUS TANGGAL (kata kunci = task X dan selesai)
+    elif (len(tanggal) == 0) and (len(taskX)==1) and (selesai>-1):
+        taskList = taskX[0].split(" ")
+        idDelete = int(taskList[1])
+        delete_jadwal = Jadwal.query.filter(Jadwal.id == idDelete).first()
+        if delete_jadwal:
+            db.session.delete(delete_jadwal)
+            db.session.commit()
+            response = ["[TASK BERHASIL DIHAPUS]"]
+        else:
+            response = ["[TASK TIDAK ADA TOLONG CEK KEMBALI]"]
 
     return render_template("chat.html", query=query, response=response)
