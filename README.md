@@ -37,3 +37,5 @@ Catatan: Persona menggunakan algoritma KMP, BM, dan Regex untuk mengolah masukan
 
 ## Identitas Pembuat
 Dibuat oleh: [13519062 Feralezer L. G. Tampubolon](https://github.com/felagorn) dan [13519103 Bryan Rinaldo](https://github.com/bryanrinaldoo)
+
+Kode sumber program dapat diunduh melalui [link Google Drive](https://drive.google.com/drive/folders/1wSmW9_jVs0KMn1SMpmZR79qycx2jdSFH?usp=sharing). Kode program juga tersedia pada [repository Github](https://github.com/felagorn/Tubes3_13519062) (Repository bersifat private, tapi dapat dibuka jika perlu).
