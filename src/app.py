@@ -30,17 +30,14 @@ def sqlSelect(connection, query):
         print(str(e))
     return result
 
-app = Flask(__name__)
-app.config["UPLOAD_PATH"] = "../test"
-
-def regextanggal(s):
+def regexTanggal(s):
     tanggals = re.findall('(\\b\\d{2}/([1-9]|1[0-2]|0[1-9])/\\d{4}\\b)', s)
     tanggal =[]
     for t in tanggals: 
         tanggal.append(t[0])
     print(tanggal)
 
-def regexkatapenting(s):
+def regexKataPenting(s):
     katapenting = []
     with open(os.path.join(app.config["UPLOAD_PATH"], "katapenting.txt"), "r") as filekata:
         for line in filekata: 
@@ -49,23 +46,23 @@ def regexkatapenting(s):
     katapentingreg = re.findall(x , s)
     print(katapentingreg)
 
-def regexmatkul(s):
+def regexMatkul(s):
     matkul = re.findall('(\\b[a-zA-Z][a-zA-Z]\\d{4}\\b)', s)
     print(matkul)
 
-def regexdeadline(s):
+def regexDeadline(s):
     deadline = re.findall('(\\b[dD]eadline\\b)', s)
     print(deadline)
 
-def regexminggu(s):
+def regexMinggu(s):
     minggu = re.findall('(\\b[0-9]+ [mM]inggu [kK]e [dD]epan\\b)', s)
     print(minggu)
 
-def regexhariN(s):
+def regexHariN(s):
     hariN = re.findall('(\\b[0-9]+ [hH]ari [kK]e [dD]epan\\b)', s)
     print(hariN)
 
-def regexhariIni(s):
+def regexHariIni(s):
     hariIni = re.findall('(\\b[hH]ari [iI]ni\\b)', s)
     print(hariIni)
 
@@ -73,17 +70,20 @@ def regexTaskX(s):
     taskX = re.findall('(\\b[tT]ask [0-9]+\\b)', s)
     print(taskX)
 
-def regexselesai(s):
+def regexSelesai(s):
     selesai = re.findall('(\\b[sS]elesai\\b)', s)
     print(selesai)
 
-def regexpersona(s):
+def regexPersona(s):
     persona = re.findall('(\\b[pP]ersona\\b)', s)
     print(persona)
 
-def regexfitur(s):
+def regexFitur(s):
     fitur = re.findall('(\\b[fF]itur\\b)', s)
     print(fitur)
+
+app = Flask(__name__)
+app.config["UPLOAD_PATH"] = "../test"
 
 @app.route("/")
 @app.route("/index")
@@ -91,13 +91,7 @@ def index():
     return render_template("index.html")
 
 @app.route("/chat", methods=["GET"])
-def query():
+def chat():
     query = request.args.get("q")
     print(query)
-    regexTaskX(query)
-    regexselesai(query)
-    regexpersona(query)
-    regexfitur(query)
     return render_template("chat.html")
-
-
