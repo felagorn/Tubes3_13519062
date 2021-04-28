@@ -94,4 +94,4 @@ def index():
 def chat():
     query = request.args.get("q")
     print(query)
-    return render_template("chat.html")
+    return render_template("chat.html", query=query)
