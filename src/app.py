@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, abort, sen
 import sqlite3
 import datetime
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql.expression import and_
 
 def findFails(pattern):
     fails = []
@@ -207,6 +208,22 @@ def chat():
                 for dl in deadlines:
                     response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
                     i += 1
+
+    elif(len(matkul)==1) and (deadline>-1) and (len(kataPenting)==1):
+        print(kataPenting)
+        print(kataPenting[0].title())
+        deadlines = Jadwal.query.filter(and_(Jadwal.matkul==matkul[0].upper(), Jadwal.jenis_tugas == kataPenting[0].title())).all()    
+        if(kataPenting[0].title() != "Tucil" and kataPenting[0].title() !="Tubes"):
+            response = ["Bukan deadline kak :("]
+        else:
+            if deadlines:
+                response = ["[Daftar Tanggal Deadline]"]
+                i = 1
+                for dl in deadlines:
+                    response.append(dl.tanggal.strftime('%d/%m/%Y'))
+                    i += 1
+            else:
+                response = ["Yey, gaada deadline"]
         #KASUS 4 = UPDATE TANGGAL (kata kunci = tanggal dan task X)
     elif (len(tanggal) == 1) and (len(taskX)==1):
         taskList = taskX[0].split(" ")
