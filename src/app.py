@@ -90,16 +90,14 @@ def regexfitur(s):
 def index():
     return render_template("index.html")
 
-@app.route("/query", methods=["GET"])
+@app.route("/chat", methods=["GET"])
 def query():
     query = request.args.get("q")
     print(query)
-    
-    
     regexTaskX(query)
     regexselesai(query)
     regexpersona(query)
     regexfitur(query)
-    return render_template("index.html")
+    return render_template("chat.html")
 
 

@@ -26,29 +26,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body" style="overflow: auto;">
-                        <div class="row">
-                            <div class="col-3 offset-9">
-                                <div class="chat-bubble chat-bubble-right">
-                                    <p>Paragraph</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="chat-bubble chat-bubble-left">
-                                    <p>Paragraph</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="card-body" style="overflow: auto;" id="chatBubbles">
                     </div>
                     <div class="card-footer" style="background-color: var(--01dp);box-shadow: 0px 3x 5px var(--surface-dark);">
-                        <form method="GET" action="/query">
-                            <div class="form-row">
-                                <div class="col align-self-center"><textarea class="form-control" placeholder="Enter a message" name="q" autofocus></textarea></div>
-                                <div class="col-1"><button class="btn" type="submit"><i class="material-icons">send</i></button></div>
-                            </div>
-                        </form>
+                        <div class="form-row">
+                            <div class="col align-self-center"><textarea class="form-control" placeholder="Enter a message" name="q" autofocus id="textareaChat"></textarea></div>
+                            <div class="col-1"><button class="btn" id="buttonSubmit"><i class="material-icons">send</i></button></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -56,6 +40,15 @@
     </div>
     <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script>
+        let query = document.querySelector("#textareaChat");
+        let sendButton = document.getElementById("buttonSubmit");
+        sendButton.onclick = function() {
+            $.get(('/chat?q=' + query.value), function(data) {
+                document.getElementById("chatBubbles").innerHTML += data;
+            });
+        };
+    </script>
 </body>
 
 </html>
