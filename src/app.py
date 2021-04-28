@@ -73,7 +73,8 @@ def regexTanggal(s):
     tanggals = re.findall('(\\b\\d{2}/([1-9]|1[0-2]|0[1-9])/\\d{4}\\b)', s)
     tanggal =[]
     for t in tanggals: 
-        tanggal.append(t[0])
+        td = datetime.datetime.strptime(t[0], "%d/%m/%Y")
+        tanggal.append(td)
     return tanggal
 
 def regexKataPenting(s):
@@ -89,6 +90,10 @@ def regexMatkul(s):
     matkul = re.findall('(\\b[a-zA-Z][a-zA-Z]\\d{4}\\b)', s)
     print(matkul)
 
+def regexTopik(s):
+    topik = re.findall(r'"(.+?)"', s)
+    return(topik)
+    
 def regexDeadline(s):
     deadline = re.findall('(\\b[dD]eadline\\b)', s)
     print(deadline)
@@ -123,8 +128,21 @@ def regexFitur(s):
 
 app = Flask(__name__)
 app.config["UPLOAD_PATH"] = "../test"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(app.config["UPLOAD_PATH"], "jadwal.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+ os.path.join(app.config["UPLOAD_PATH"], "jadwal.db")
+app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 db = SQLAlchemy(app)
+
+class Jadwal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tanggal = db.Column(db.DateTime, nullable = False)
+    matkul = db.Column(db.String(255), nullable = False)
+    jenis_tugas = db.Column(db.String(255), nullable = False)
+    topik_tugas = db.Column(db.String(255), nullable = False)
+def addJadwal(tanggal, matkul, jenis_tugas, topik_tugas):
+    jadwal = Jadwal(tanggal=tanggal, matkul=matkul, jenis_tugas=jenis_tugas, topik_tugas=topik_tugas)
+    db.session.add(jadwal)
+    db.session.commit()
+    print("udah masuk")
 
 @app.route("/")
 @app.route("/index")
@@ -135,6 +153,29 @@ def index():
 def chat():
     query = request.args.get("q")
     print(query)
+    
     tanggal = regexTanggal(query)
+    katapenting = regexKataPenting(query)
+    matkul = regexMatkul(query)
+    topik = regexTopik(query)
+
     print(tanggal)
+    print(katapenting)
+    print(matkul)
+    print(topik)
+
+    #Menambahkan jadwal ke database
+    if(len(tanggal)==1 and len(matkul)==1 and len(katapenting)==1 and len(topik)==1):
+        addJadwal(tanggal[0], matkul[0], katapenting[0], topik[0])
+
+
+    nama = Jadwal.query.all()
+    for i in nama: 
+        print(i.id)
+        print(i.tanggal)
+        print(i.matkul)
+        print(i.jenis_tugas)
+        print(i.topik_tugas)
+    id1 = Jadwal.query.filter_by(id=1).first()
+    print(id1.matkul)
     return render_template("chat.html", query=query)
