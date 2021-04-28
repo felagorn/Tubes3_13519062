@@ -21,8 +21,9 @@ Regular expression (regex) merupakan sekumpulan notasi dan karakter yang digunak
 * [Python 3.9.4](https://www.python.org/downloads/release/python-394/) (versi yang digunakan pembuat).
 * [Flask 1.1.2](https://pypi.org/project/Flask/) (library python) beserta segala prerequisitenya.
 * [Flask-SQLAlchemy 2.5.1](https://pypi.org/project/Flask-SQLAlchemy/) (library python) beserta segala prerequisitenya.
+* Browser yang men-support JavaScript.
 
-Catatan: Penggunaan versi yang lebih lawas dari prerequisite-prerequisite di atas tidak disarankan oleh pembuat Persona. Meskipun demikian, Python pada umumnya cukup backward-compatible dan versi lawas seharusnya tetap bisa digunakan untuk menjalankan Persona.
+Catatan: Penggunaan versi yang lebih lawas dari prerequisite-prerequisite Python di atas tidak disarankan oleh pembuat Persona. Meskipun demikian, Python pada umumnya cukup backward-compatible dan versi lawas seharusnya tetap bisa digunakan untuk menjalankan Persona.
 
 ## Setup
 1. Install [Python 3.9.4](https://www.python.org/downloads/release/python-394/).
@@ -30,7 +31,7 @@ Catatan: Penggunaan versi yang lebih lawas dari prerequisite-prerequisite di ata
 3. Jalankan backend Persona melalui Command Prompt dengan melakukan navigasi ke direktori yang menyimpan app.py, lalu menuliskan `flask run`. Jika pada Command Prompt ditampilkan IP Address + port lokal (contoh: [http://127.0.0.1:5000/](http://127.0.0.1:5000/)), maka instalasi berhasil dilakukan. Matikan backend persona dengan menekan Ctrl+C untuk menutup Flask.
 
 ## Cara Menggunakan Program
-Untuk menggunakan Persona, buka [http://127.0.0.1:5000/](http://127.0.0.1:5000/). Ketik "help" untuk melihat apa saja yang bisa diterima Persona.
+Untuk menggunakan Persona, buka [http://127.0.0.1:5000/](http://127.0.0.1:5000/) pada browser yang men-support JavaScript. Ketik "help" untuk melihat apa saja yang bisa diterima Persona.
 
 Catatan: Persona menggunakan algoritma KMP, BM, dan Regex untuk mengolah masukan chat dari pengguna. Contoh yang diberikan pada "help" tidak baku, dan pengguna bisa chatting dengan Persona menggunakan kalimat sehari-hari selama sejumlah kata kunci tetap ditangkap oleh Persona.
 
