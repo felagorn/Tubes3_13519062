@@ -148,9 +148,6 @@ def addJadwal(tanggal, matkul, jenis_tugas, topik_tugas):
 @app.route("/")
 @app.route("/index")
 def index():
-    rows = Jadwal.query.all()
-    for row in rows:
-        print(str(row.id) + " " + str(row.tanggal) + " " + str(row.matkul) + " " + str(row.jenis_tugas) + " " + str(row.topik_tugas))
     return render_template("index.html")
 
 @app.route("/chat", methods=["GET"])
@@ -172,31 +169,43 @@ def chat():
     fitur = bmFitur(query)
 
     response = pesanTidakDikenali()
-    print(deadline)
-    print(query)
-    print(len(tanggal))
-    print(len(matkul))
-    print(len(kataPenting))
-    print(len(topik))
-    if taskX is None:
-        print("TaskX none")
-    else:
-        print("TaskX not none")
-        print(taskX)
     # Kasus 1: menambahkan jadwal ke database
     if (len(tanggal) == 1) and (len(matkul) == 1) and (len(kataPenting) == 1) and (len(topik) == 1) and (len(taskX) == 0):
-        print("Salah")
         itemid = addJadwal(tanggal[0], matkul[0], kataPenting[0], topik[0])
         if itemid > 0:
-            response = ["[TASK BERHASIL DICATAT]", "(ID: " + str(itemid) + ") " + tanggal[0].strftime('%d/%m/%Y') + " - " + matkul[0] + " - " + kataPenting[0] + " - " + topik[0]]
-    elif (len(tanggal) == 0) and (len(matkul) == 0) and (len(kataPenting) == 0) and (len(topik) == 0) and (deadline > -1):
-        print("Masuk")
-        if (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0) and (len(taskX) == 0):
-            response = ["[Daftar Deadline]"]
+            response = ["[TASK BERHASIL DICATAT]", "(ID: " + str(itemid) + ") " + tanggal[0].strftime('%d/%m/%Y') + " - " + matkul[0].upper() + " - " + kataPenting[0].title() + " - " + topik[0]]
+    elif (len(tanggal) <= 2) and (len(matkul) == 0) and (len(kataPenting) == 0) and (len(topik) == 0) and (deadline > -1):
+        if (len(tanggal) == 0) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0) and (len(taskX) == 0):
             deadlines = Jadwal.query.all()
-            i = 1
-            for dl in deadlines:
-                response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
-                i += 1
+            if len(deadlines) == 0:
+                response = ["Tidak ada"]
+            else:
+                response = ["[Daftar Deadline]"]
+                i = 1
+                for dl in deadlines:
+                    response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
+                    i += 1
+        elif (len(tanggal) == 2) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0) and (len(taskX) == 0):
+            deadlines = Jadwal.query.filter(Jadwal.tanggal.between(min(tanggal[0], tanggal[1]), max(tanggal[0], tanggal[1]))).all()
+            if len(deadlines) == 0:
+                response = ["Tidak ada"]
+            else:
+                response = ["[Daftar Deadline]"]
+                i = 1
+                for dl in deadlines:
+                    response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
+                    i += 1
+        elif (len(tanggal) == 0) and (len(nMingguKeDepan) == 1) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0) and (len(taskX) == 0):
+            todayDate = datetime.date.today()
+            weeks = nMingguKeDepan[0].split(" ")
+            deadlines = Jadwal.query.filter(Jadwal.tanggal.between(todayDate, (todayDate + datetime.timedelta(weeks=int(weeks[0]))))).all()
+            if len(deadlines) == 0:
+                response = ["Tidak ada"]
+            else:
+                response = ["[Daftar Deadline]"]
+                i = 1
+                for dl in deadlines:
+                    response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
+                    i += 1
 
     return render_template("chat.html", query=query, response=response)
