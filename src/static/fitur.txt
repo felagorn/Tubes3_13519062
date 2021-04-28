@@ -1,48 +1,48 @@
 1. Menambahkan Jadwal
 Persona akan mencatat jadwal ketika pengguna memberikan 4 komponen penting yaitu tanggal, kode mata kuliah, jenis tugas, dan topik tugas. 
 Contoh penggunaan: 
-“Persona tolong catat dong, nanti aku bakal ada Tubes Stima IF2211 dengan topik “Libur di tahun 2021” yang dikumpul tanggal 25/12/2021”
+“Persona tolong catat dong, nanti aku bakal ada *Tubes* Stima *IF2211* dengan topik *“Libur di tahun 2021”* yang dikumpul tanggal *25/12/2021*”
 
 2. Melihat daftar task 
 Menambahkan jadwal tidak akan berguna jika kita tidak bisa melihat daftar jadwal yang sudah kita catat. Persona akan memperlihatkan daftar deadline sesuai dengan yang diminta sesuai dengan kata kunci yang digunakan. Terdapat 6 cara penggunaan dalam fitur 2 ini : 
 Melihat daftar deadline yang telah dicatat
 Contoh penggunaan: 
-“Persona kasih lihat dong, deadline apa aja yang udah aku catet”
+“Persona kasih lihat dong, *deadline* apa aja yang udah aku catet”
 Melihat daftar deadline berdasarkan range tanggal 
 Contoh penggunaan: 
-“Persona kasih lihat dong, deadline apa aja dari tanggal 20/04/2021 sampai tanggal 29/04/2022”
+“Persona kasih lihat dong, *deadline* apa aja dari tanggal *20/04/2021* sampai tanggal *29/04/2022*”
 Melihat daftar deadline N hari ke depan
 Contoh penggunaan: 
-“Persona kasih lihat dong, deadline apa aja 5 hari ke depan”
+“Persona kasih lihat dong, *deadline* apa aja *5 hari ke depan*”
 Melihat daftar deadline N minggu ke depan
 Contoh penggunaan: 
-“Persona kasih lihat dong, deadline apa aja 2 minggu ke depan”
+“Persona kasih lihat dong, *deadline* apa aja *2 minggu ke depan*”
 Melihat daftar deadline hari ini  
 Contoh penggunaan: 
-“Persona kasih lihat dong, deadline apa aja sih hari ini”
+“Persona kasih lihat dong, *deadline* apa aja sih *hari ini*”
 Melihat daftar deadline berdasarkan kata penting
 Contoh penggunaan: 
-“Persona tolong cek ada kuis apa aja 3 minggu depan”
+“Persona tolong cek ada *kuis* apa aja *3 minggu ke depan*”
 
 3. Melihat tanggal/deadline dari sebuah task 
 Dengan Persona kita juga bisa mencari deadline dari tugas sebuah mata kuliah. Dengan menuliskan 3 kata kunci yaitu “deadline”, jenis tugas, dan kode matakuliah maka Persona akan menampilkan tanggal pengumpulan deadline dari tugas yang diminta. 
 Contoh penggunaan: 
-“Persona, deadline tucil IF2211 kapan sih?”
+“Persona, *deadline* *tucil* *IF2211* kapan sih?”
 
 4. Memperbaharui task 
 Dalam kehidupan nyata walaupun sangat jarang terjadi jika sebuah tugas diundur tetapi mungkin terjadi jika dimajukan , maka kita harus memperbarui tanggal dari pengumpulan tugas tersebut. Oleh karena hal itu, Persona dapat memperbaharui task dengan 2 kata kunci yaitu dengan task X dengan X sebagai ID dari task yang ingin diperbaharui dan tanggal diubah nya tanggal pengumpulan. 
 Contoh penggunaan: 
-“Persona deadline task 2 aku dimajuin nih jadi tanggal 01/01/2022 padahal lagi libur, belum ngerjain apa2 lagi :((( ”
+“Persona deadline *task 2* aku dimajuin nih jadi tanggal *01/01/2022* padahal lagi libur, belum ngerjain apa2 lagi :((( ”
 
 5. Menghapus task 
 Ada suatu saat ketika tugas kita akan selesai, walaupun bukan sekarang. Tetapi ketika sudah selesai kita ingin agar task tersebut hilang dari jadwal yang kita buat. Dengan 2 kata penting, Persona dapat membantu untuk membuang task tersebut dari jadwal. 
 Contoh penggunaan: 
-“Akhirnya selesai juga nih tugas, task 6 tolong di hapus dong. liat di jadwal aja udah eneg”
+“Akhirnya *selesai* juga nih tugas, *task 6* tolong di hapus dong. liat di jadwal aja udah eneg”
 
 6. Menampilkan opsi help
 Jika kita belum familiar pada chatbot Persona ini, maka kita butuh sebuah panduan untuk memakai chatbot Persona. Oleh sebab itu kami membuat fitur help dengan 3 kata penting yang tidak harus digunakan secara bersama-sama tetapi tidak boleh ada kata penting lainnya. 
 Contoh penggunaan: 
-“Persona aku ga ngerti cara pake kamu :(”
+“*Persona* aku ga ngerti cara pake kamu :(”
 
 7. Menampilkan pesan error
 Persona hanya dapat menampilkan pesan yang dikenali oleh nya. Hal ini agar tidak terjadi kasus seperti film “her”, jangan sampai ada orang yang jatuh cinta dengan Persona. 
