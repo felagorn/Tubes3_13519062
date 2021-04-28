@@ -94,33 +94,36 @@ def regexTopik(s):
     topik = re.findall(r'"(.+?)"', s)
     return topik
     
-def regexDeadline(s):
+def kmpDeadline(s):
     return knuthMorrisPratt(s.lower(), "deadline")
 
-def regexMinggu(s):
+def regexNMingguKeDepan(s):
     minggu = re.findall('(\\b[0-9]+ [mM]inggu [kK]e [dD]epan\\b)', s)
-    print(minggu)
+    return minggu
 
-def regexHariN(s):
+def regexNHariKeDepan(s):
     hariN = re.findall('(\\b[0-9]+ [hH]ari [kK]e [dD]epan\\b)', s)
-    print(hariN)
+    return hariN
 
 def regexHariIni(s):
     hariIni = re.findall('(\\b[hH]ari [iI]ni\\b)', s)
-    print(hariIni)
+    return hariIni
 
 def regexTaskX(s):
     taskX = re.findall('(\\b[tT]ask [0-9]+\\b)', s)
-    print(taskX)
+    return taskX
 
-def regexSelesai(s):
+def kmpSelesai(s):
     return knuthMorrisPratt(s.lower(), "selesai")
 
-def regexPersona(s):
+def bmPersona(s):
     return boyerMoore(s.lower(), "persona")
 
-def regexFitur(s):
+def bmFitur(s):
     return boyerMoore(s.lower(), "fitur")
+
+def pesanTidakDikenali():
+    return ["Maaf, pesan tidak dikenali"]
 
 app = Flask(__name__)
 app.config["UPLOAD_PATH"] = "../test"
@@ -134,44 +137,50 @@ class Jadwal(db.Model):
     matkul = db.Column(db.String(255), nullable = False)
     jenis_tugas = db.Column(db.String(255), nullable = False)
     topik_tugas = db.Column(db.String(255), nullable = False)
+
 def addJadwal(tanggal, matkul, jenis_tugas, topik_tugas):
     jadwal = Jadwal(tanggal=tanggal, matkul=matkul.upper(), jenis_tugas=jenis_tugas.title(), topik_tugas=topik_tugas)
     db.session.add(jadwal)
+    db.session.flush()
     db.session.commit()
-    print("udah masuk")
+    return jadwal.id
 
 @app.route("/")
 @app.route("/index")
 def index():
+    rows = Jadwal.query.all()
+    for row in rows:
+        print(str(row.id) + " " + str(row.tanggal) + " " + str(row.matkul) + " " + str(row.jenis_tugas) + " " + str(row.topik_tugas))
     return render_template("index.html")
 
 @app.route("/chat", methods=["GET"])
 def chat():
     query = request.args.get("q")
-    print(query)
     
+    # lakukan semua pengecekan string
     tanggal = regexTanggal(query)
-    katapenting = regexKataPenting(query)
+    kataPenting = regexKataPenting(query)
     matkul = regexMatkul(query)
     topik = regexTopik(query)
+    deadline = kmpDeadline(query)
+    nMingguKeDepan = regexNMingguKeDepan(query)
+    nHariKeDepan = regexNHariKeDepan(query)
+    hariIni = regexHariIni(query)
+    taskX = regexTaskX(query)
+    selesai = kmpSelesai(query)
+    persona = bmPersona(query)
+    fitur = bmFitur(query)
 
-    print(tanggal)
-    print(katapenting)
-    print(matkul)
-    print(topik)
+    response = pesanTidakDikenali()
+    # Kasus 1: menambahkan jadwal ke database
+    if (len(tanggal) == 1) and (len(matkul) == 1) and (len(kataPenting) == 1) and (len(topik) == 1) and (taskX is None):
+        itemid = addJadwal(tanggal[0], matkul[0], kataPenting[0], topik[0])
+        if itemid > 0:
+            response = ["[TASK BERHASIL DICATAT]", "(ID: " + str(itemid) + ") " + tanggal[0].strftime('%d/%m/%Y') + " - " + matkul[0] + " - " + kataPenting[0] + " - " + topik[0]]
+        else:
+            response = pesanTidakDikenali()
+    elif (tanggal is None) and (matkul is None) and (kataPenting is None) and (topik is None) and (deadline > -1):
+        if (nMingguKeDepan is None) and (nHariKeDepan is None) and (hariIni is None) and (taskX is None):
+            print()
 
-    #Menambahkan jadwal ke database
-    if(len(tanggal)==1 and len(matkul)==1 and len(katapenting)==1 and len(topik)==1):
-        addJadwal(tanggal[0], matkul[0], katapenting[0], topik[0])
-
-
-    nama = Jadwal.query.all()
-    for i in nama: 
-        print(i.id)
-        print(i.tanggal)
-        print(i.matkul)
-        print(i.jenis_tugas)
-        print(i.topik_tugas)
-    id1 = Jadwal.query.filter_by(id=1).first()
-    print(id1.matkul)
-    return render_template("chat.html", query=query)
+    return render_template("chat.html", query=query, response=response)

@@ -46,6 +46,7 @@
         sendButton.onclick = function() {
             $.get(('/chat?q=' + query.value), function(data) {
                 document.getElementById("chatBubbles").innerHTML += data;
+                document.getElementById("textareaChat").value = "";
             });
         };
     </script>
