@@ -123,6 +123,9 @@ def bmPersona(s):
 def bmFitur(s):
     return boyerMoore(s.lower(), "fitur")
 
+def bmHelp(s):
+    return boyerMoore(s.lower(), "help")
+
 def pesanTidakDikenali():
     return ["Maaf, pesan tidak dikenali"]
 
@@ -168,14 +171,15 @@ def chat():
     selesai = kmpSelesai(query)
     persona = bmPersona(query)
     fitur = bmFitur(query)
+    fiturHelp = bmHelp(query)
 
     response = pesanTidakDikenali()
     # Kasus 1: menambahkan jadwal ke database
-    if (len(tanggal) == 1) and (len(matkul) == 1) and (len(kataPenting) == 1) and (len(topik) == 1) and (len(taskX) == 0):
+    if (len(tanggal) == 1) and (len(matkul) == 1) and (len(kataPenting) == 1) and (len(topik) == 1) and (len(taskX) == 0) and (fiturHelp == -1):
         itemid = addJadwal(tanggal[0], matkul[0], kataPenting[0], topik[0])
         if itemid > 0:
             response = ["[TASK BERHASIL DICATAT]", "(ID: " + str(itemid) + ") " + tanggal[0].strftime('%d/%m/%Y') + " - " + matkul[0].upper() + " - " + kataPenting[0].title() + " - " + topik[0]]
-    elif (len(tanggal) <= 2) and (len(matkul) == 0) and (len(kataPenting) == 0) and (len(topik) == 0) and (deadline > -1) and (len(taskX) == 0):
+    elif (len(tanggal) <= 2) and (len(matkul) == 0) and (len(kataPenting) == 0) and (len(topik) == 0) and (deadline > -1) and (len(taskX) == 0) and (fiturHelp == -1):
         if (len(tanggal) == 0) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0):
             deadlines = Jadwal.query.all()
             if len(deadlines) == 0:
@@ -232,7 +236,7 @@ def chat():
                 for dl in deadlines:
                     response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
                     i += 1
-    elif (len(tanggal) <= 2) and (len(matkul) == 0) and (len(kataPenting) == 1) and (len(topik) == 0) and (deadline >= -1) and (len(taskX) == 0):
+    elif (len(tanggal) <= 2) and (len(matkul) == 0) and (len(kataPenting) == 1) and (len(topik) == 0) and (deadline >= -1) and (len(taskX) == 0) and (fiturHelp == -1):
         if (len(tanggal) == 0) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0):
             deadlines = Jadwal.query.filter_by(jenis_tugas=kataPenting[0].title()).all()
             if len(deadlines) == 0:
@@ -289,7 +293,7 @@ def chat():
                 for dl in deadlines:
                     response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
                     i += 1
-    elif(len(matkul)==1) and (deadline>-1) and (len(kataPenting)==1):
+    elif(len(matkul)==1) and (deadline>-1) and (len(kataPenting)==1) and (fiturHelp == -1):
         print(kataPenting)
         print(kataPenting[0].title())
         deadlines = Jadwal.query.filter(and_(Jadwal.matkul==matkul[0].upper(), Jadwal.jenis_tugas == kataPenting[0].title())).all()    
@@ -305,7 +309,7 @@ def chat():
             else:
                 response = ["Yey, gaada deadline"]
         #KASUS 4 = UPDATE TANGGAL (kata kunci = tanggal dan task X)
-    elif (len(tanggal) == 1) and (len(taskX)==1):
+    elif (len(tanggal) == 1) and (len(taskX)==1) and (fiturHelp == -1):
         taskList = taskX[0].split(" ")
         idDelete = int(taskList[1])
         update_tanggal = Jadwal.query.filter(Jadwal.id == idDelete).first()
@@ -316,7 +320,7 @@ def chat():
         else: 
             response = ["[TASK TIDAK ADA TOLONG CEK KEMBALI]"]
     #KASUS 5 = HAPUS TANGGAL (kata kunci = task X dan selesai)
-    elif (len(tanggal) == 0) and (len(taskX)==1) and (selesai>-1):
+    elif (len(tanggal) == 0) and (len(taskX)==1) and (selesai>-1) and (fiturHelp == -1):
         taskList = taskX[0].split(" ")
         idDelete = int(taskList[1])
         delete_jadwal = Jadwal.query.filter(Jadwal.id == idDelete).first()
@@ -326,5 +330,16 @@ def chat():
             response = ["[TASK BERHASIL DIHAPUS]"]
         else:
             response = ["[TASK TIDAK ADA TOLONG CEK KEMBALI]"]
+    elif ((persona > -1) or (fitur > -1) or (fiturHelp > -1)) and (len(tanggal) == 0) and (len(kataPenting) == 0) and (len(matkul) == 0) and (len(topik) == 0) and (deadline == -1) and (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0) and (len(taskX) == 0) and (selesai == -1):
+        response = ["[Fitur]"]
+        with open(os.path.join(os.path.dirname(os.path.abspath(os.path.realpath(__file__))), "static/fitur.txt"), "r", encoding="utf-8") as fiturFile:
+            for line in fiturFile:
+                response.append(line)
+        response.append("[Daftar kata penting]")
+        with open(os.path.join(app.config["UPLOAD_PATH"], "katapenting.txt"), "r") as kataPentingFile:
+            kataPentingIdx = 1
+            for line in kataPentingFile:
+                response.append(str(kataPentingIdx) + ". " + line)
+                kataPentingIdx += 1
 
     return render_template("chat.html", query=query, response=response)
