@@ -172,15 +172,31 @@ def chat():
     fitur = bmFitur(query)
 
     response = pesanTidakDikenali()
+    print(deadline)
+    print(query)
+    print(len(tanggal))
+    print(len(matkul))
+    print(len(kataPenting))
+    print(len(topik))
+    if taskX is None:
+        print("TaskX none")
+    else:
+        print("TaskX not none")
+        print(taskX)
     # Kasus 1: menambahkan jadwal ke database
-    if (len(tanggal) == 1) and (len(matkul) == 1) and (len(kataPenting) == 1) and (len(topik) == 1) and (taskX is None):
+    if (len(tanggal) == 1) and (len(matkul) == 1) and (len(kataPenting) == 1) and (len(topik) == 1) and (len(taskX) == 0):
+        print("Salah")
         itemid = addJadwal(tanggal[0], matkul[0], kataPenting[0], topik[0])
         if itemid > 0:
             response = ["[TASK BERHASIL DICATAT]", "(ID: " + str(itemid) + ") " + tanggal[0].strftime('%d/%m/%Y') + " - " + matkul[0] + " - " + kataPenting[0] + " - " + topik[0]]
-        else:
-            response = pesanTidakDikenali()
-    elif (tanggal is None) and (matkul is None) and (kataPenting is None) and (topik is None) and (deadline > -1):
-        if (nMingguKeDepan is None) and (nHariKeDepan is None) and (hariIni is None) and (taskX is None):
-            print()
+    elif (len(tanggal) == 0) and (len(matkul) == 0) and (len(kataPenting) == 0) and (len(topik) == 0) and (deadline > -1):
+        print("Masuk")
+        if (len(nMingguKeDepan) == 0) and (len(nHariKeDepan) == 0) and (len(hariIni) == 0) and (len(taskX) == 0):
+            response = ["[Daftar Deadline]"]
+            deadlines = Jadwal.query.all()
+            i = 1
+            for dl in deadlines:
+                response.append(str(i) + ". (ID: " + str(dl.id) + ") " + dl.tanggal.strftime('%d/%m/%Y') + " - " + dl.matkul + " - " + dl.jenis_tugas + " - " + dl.topik_tugas)
+                i += 1
 
     return render_template("chat.html", query=query, response=response)
