@@ -84,19 +84,18 @@ def regexKataPenting(s):
             katapenting.append(line.rstrip())
     x = '(\\b'+'|'.join(katapenting)+'\\b)'
     katapentingreg = re.findall(x , s)
-    print(katapentingreg)
+    return katapentingreg
 
 def regexMatkul(s):
     matkul = re.findall('(\\b[a-zA-Z][a-zA-Z]\\d{4}\\b)', s)
-    print(matkul)
+    return matkul
 
 def regexTopik(s):
     topik = re.findall(r'"(.+?)"', s)
-    return(topik)
+    return topik
     
 def regexDeadline(s):
-    deadline = re.findall('(\\b[dD]eadline\\b)', s)
-    print(deadline)
+    return knuthMorrisPratt(s.lower(), "deadline")
 
 def regexMinggu(s):
     minggu = re.findall('(\\b[0-9]+ [mM]inggu [kK]e [dD]epan\\b)', s)
@@ -115,16 +114,13 @@ def regexTaskX(s):
     print(taskX)
 
 def regexSelesai(s):
-    selesai = re.findall('(\\b[sS]elesai\\b)', s)
-    print(selesai)
+    return knuthMorrisPratt(s.lower(), "selesai")
 
 def regexPersona(s):
-    persona = re.findall('(\\b[pP]ersona\\b)', s)
-    print(persona)
+    return boyerMoore(s.lower(), "persona")
 
 def regexFitur(s):
-    fitur = re.findall('(\\b[fF]itur\\b)', s)
-    print(fitur)
+    return boyerMoore(s.lower(), "fitur")
 
 app = Flask(__name__)
 app.config["UPLOAD_PATH"] = "../test"
@@ -139,7 +135,7 @@ class Jadwal(db.Model):
     jenis_tugas = db.Column(db.String(255), nullable = False)
     topik_tugas = db.Column(db.String(255), nullable = False)
 def addJadwal(tanggal, matkul, jenis_tugas, topik_tugas):
-    jadwal = Jadwal(tanggal=tanggal, matkul=matkul, jenis_tugas=jenis_tugas, topik_tugas=topik_tugas)
+    jadwal = Jadwal(tanggal=tanggal, matkul=matkul.upper(), jenis_tugas=jenis_tugas.title(), topik_tugas=topik_tugas)
     db.session.add(jadwal)
     db.session.commit()
     print("udah masuk")
