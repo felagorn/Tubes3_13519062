@@ -5,6 +5,70 @@ import sqlite3
 import datetime
 from flask_sqlalchemy import SQLAlchemy
 
+def findFails(pattern):
+    fails = []
+    fails.append(0)
+    i = 1
+    j = 0
+    while i < len(pattern):
+        if pattern[j] == pattern[i]:
+            fails.append(j + 1)
+            i += 1
+            j += 1
+        elif j > 0:
+            j = fails[j - 1]
+        else:
+            fails.append(0)
+            i += 1
+    return fails
+
+def knuthMorrisPratt(string, pattern):
+    fails = findFails(pattern)
+    i = 0
+    j = 0
+    while (i < len(string)):
+        if string[i] == pattern[j]:
+            if j == (len(pattern) - 1):
+                return i - len(pattern) + 1
+            i += 1
+            j += 1
+        elif j > 0:
+            j = fails[j - 1]
+        else:
+            i += 1
+    return -1
+
+def findLastOccurence(pattern):
+    lastOccurence = {}
+    for i in range(len(pattern)):
+        lastOccurence[pattern[i]] = i
+    return lastOccurence
+
+def boyerMoore(string, pattern):
+    lastOccurence = findLastOccurence(pattern)
+    i = len(pattern) - 1
+    if i > (len(string) - 1):
+        return -1
+    j = len(pattern) - 1
+    do = True
+    while do or (i <= (len(string) - 1)):
+        if string[i] == pattern[j]:
+            if j == 0:
+                return i
+            else:
+                i -= 1
+                j -= 1
+        else:
+            if string[i] in lastOccurence:
+                i = i + len(pattern) - min(j , (1 + lastOccurence[string[i]]))
+                j = len(pattern) - 1
+            else:
+                i = i + len(pattern) - min(j , 0)
+                j = len(pattern) - 1
+        if do:
+            do = False
+    return -1
+
 def regexTanggal(s):
     tanggals = re.findall('(\\b\\d{2}/([1-9]|1[0-2]|0[1-9])/\\d{4}\\b)', s)
     tanggal =[]
@@ -15,7 +79,7 @@ def regexTanggal(s):
 def regexKataPenting(s):
     katapenting = []
     with open(os.path.join(app.config["UPLOAD_PATH"], "katapenting.txt"), "r") as filekata:
-        for line in filekata: 
+        for line in filekata:
             katapenting.append(line.rstrip())
     x = '(\\b'+'|'.join(katapenting)+'\\b)'
     katapentingreg = re.findall(x , s)
